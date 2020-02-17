@@ -1,0 +1,134 @@
+---
+title: "JMP: Joint Model for Palliative care studies"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{JMP_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+```
+
+```{r setup,include=FALSE}
+library(JMP)
+```
+
+## Introduction
+As an emerging clinical specialty, palliative care involves multiple sectors such as medicine, nursing, social work, and volunteering. Palliative care emphasizes more on relieving the suffering of patients due to the advanced disease status. The knowledge of terminal trend of quality of life (QOL) becomes an important tool to allow practitioners to provide care in a better and more efficient way. To determine the efficacy of a new palliative care treatment, analyses regarding longitudinal measurements of QOL are at greater interests than survival outcomes. However, statistical challenges are present in analyzing palliative care data as QOL decreases as patients approach the end of life. Such correlation between longitudinal QOL and survival outcomes promotes us to model them jointly in order to offer accurate interpretation and estimations.   
+   
+    
+In the paper (see reference [1]), we propose a semiparametric terminal trend model with the following two sub-models:    
+
+- a semiparametric mixed effects sub-model for the longitudinal QOL (only random intercept is used in this package)  
+$$Y_i(t^*)=\beta_\mu(t^*)+A_i\beta_A(t^*)+X_i^T\psi_X+b_i+\epsilon_i(t^*)$$
+wehre $\beta_\mu(t^*)$ denotes the mean trajectory in the control group and the $\beta_A(t^*)$ denotes the time-varying treatment effect at time $t^*$ counting backward from the time of death. The unspecified smooth functions $\beta_\mu(t^*)$ and $\beta_A(t^*)$ are determined by nonparametric curve through regression spline methods with natural cubic B-splines. The $\psi_X$ is the p-dimensional vector of fixed effect parameters associated with the baseline covariate vector $X_i$ adjusted in the model, and $b_i$ is the subjct-specific random intercept term. The $\epsilon_i(t^*)$ is the normally distributed residual error. 
+  
+- a cox sub model for the survival outcomes  
+$$\lambda_i(t)=\lambda_0(t)exp(A_i\alpha_A+\tilde{X}_i^T\alpha_X)$$
+where t denote the time since enrollment on the prospective time scale, and $\alpha_X$ denote the Q-dimensional parameters associated with the Q-dimensional baseline covariates $\tilde{X_i}$.  
+
+  
+The R package "JMP" built was aim to offer a implementation of the analyses for palliative care clinical trials from the perspective of joint modeling.  
+
+## Input and output
+The package "JMP" consists of a main function, *JMP*, that is calling other sub-functions in order to implement the joint model proposed. Firstly, we can install the package from Github.    
+
+```{r,eval=F}
+require(devtools)
+devtools::install_github("https://github.com/gitlzg/JMP", build_vignettes = TRUE)
+library(JMP)
+```
+
+The main function *JMP* is the actual function that will be applied by users. Users need to supply arguments of   
+
+- dat: formatted R dataset. See example dataset: data(dat_JMP)  
+- dataPath: path of the formatted data set to read in (if dat not supplied)  
+- covariate.fields: covariates adjusted for  
+- qol.prefix: prefix of the longitudinal quality of life measurements  
+- qol.time.prefix: prefix of the time variable for longitudinal quality of life measurements  
+- id.field: id variable in the dataset  
+- survival.time.field: survival time variable in the dataset  
+- censoring.status.field: censoring variable (1 for death, 0 for censored)  
+- treatment.status.field: treatment status (1 for treated,0 for control)  
+- long.knot.nums: number of knots of nonparametric curves (default 2 to 11)  
+
+ 
+ The final return elements from the *JMP* function are the following:
+ 
+ 1. A list of analysis results
+
+- monthly QOL results for each treatment group
+- knot.combinations: different combinations of knots for longitudinal and survival submodels  
+- maximum likelihood estimates (mle) results  
+
+and  
+
+ 2. Four figures saved in the current working directory
+
+- estimated terminal trend in a png file called "Longitudinal_trajectories.png"  
+- the time-varying treatment effect in a png file called "Longitudinal_spline_treatment_effect.png"  
+- estimated survival function and in a png file "Survival_function.png"  
+- estimated cumulative hazard function in a png file "Cumulative_hazard.png"  
+
+
+
+## Examples
+An example dataset, "dat_JMP", is included in the package. A total of 118 observations and 36 variables are saved in the "dat_JMP" data frame with the data dictionary:  
+
+- id: subject ID  
+- trt: treatment status (1 for treated, 0 for control)
+- sex  
+- death: censoring status (1 for death, 0 for censored)  
+- survival_time: survival time in months  
+- time_: time for each longitudinal measurement of QOL  
+- qol_: quality of life at different time point  
+
+
+To access the example dataset, simply type:  
+```{r}
+data(dat_JMP)
+```
+
+We will demonstrate the *JMP* function on the example dataset. To adjust for variables "sex" and baseline QOL "qol_0", we fill in the *covariates.fields* by them. Other arguments are also filled in by the corresponding variable names in the dataset.   
+```{r}
+results <- JMP(dat=dat_JMP,
+covariate.fields = c("sex", "qol_0"),
+qol.prefix="qol_", qol.time.prefix="time_",
+id.field = "id", survival.time.field = "survival_time",
+censoring.status.field = "death", treatment.status.field = "trt")
+```
+
+The first element in the results list is the monthly QOL results:  
+
+- month: time variable  
+- nCtr, nTrt: observed number of patients in control and treatment group, respectively  
+- CtrQOL, TrtQOL: average monthly QOL in control and treatment group  
+- Ctr95%CIlow, Ctr95%CIhi: lower and upper bounds of 95% CI for control group  
+- Trt95%CIlow, Trt95%CIhi: lower and upper bounds of 95% CI for treatment group  
+- TrtEffect: monthly treatment effect  
+- pValueTrtEffect: p-value for monthly treatment effect  
+```{r}
+results$monthlyResults
+```
+
+The second element is the knots combination (range specified by a input argument) with their corresponding AIC and BIC values.    
+```{r,eval=F}
+results$knot.combinations
+```
+
+The last element "mle" is a list with all results from maximum likelihood estimations and confidence intervals.    
+```{r,eval=F}
+results$mle
+```
+
+Additionally, to provide visualizations on the longitudinal and survival trend, four plots are generated and saved in the user's current R working directory.
+
+
+## References
+[1] Li Z, Frost HR, Tosteson TD, et al. A Semiparametric Joint Model for Terminal Trend of Quality of Life and Survival in Palliative Care Research. Statistics in Medicine. 2017;36:4692–4704. https://doi.org/10.1002/sim.7445
