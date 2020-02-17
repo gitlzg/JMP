@@ -14,7 +14,9 @@ browseVignettes("JMP")
 
 ## example
 library(JMP)
+
 data(dat_JMP)
+
 results <- JMP(dat=dat_JMP,
 covariate.fields = c("sex", "qol_0"),
 qol.prefix="qol_", qol.time.prefix="time_",
