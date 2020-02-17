@@ -4,6 +4,7 @@ Joint Model for Palliative care studies (R package)
 
 ## how to install the R package
 require(devtools)
+
 devtools::install_github("https://github.com/gitlzg/JMP", build_vignettes = TRUE)
 
 
