@@ -38,9 +38,11 @@
 ##'
 ##'           - pValueTrtEffect: p-value for monthly treatment effect
 ##'
-##'         2. knot.combinations: different combinations of knots for longitudinal and survival submodels with their corresponding AIC and BIC values
+##'         2. The overall p value for testing the entire model
 ##'
-##'         3. maximum likelihood estimates (mle) results
+##'         3. knot.combinations: different combinations of knots for longitudinal and survival submodels with their corresponding AIC and BIC values
+##'
+##'         4. maximum likelihood estimates (mle) results
 ##'
 ##'         and
 ##'
@@ -642,12 +644,12 @@ JMP<- function(
   }
 
   #
-  message("The overall p value is ",overallPvalueModel," for testing the entire model")
+  #message("The overall p value is ",overallPvalueModel," for testing the entire model")
 
   #print(monthlyResults)
 
-
-  results_JMP$monthlyResults <- monthlyResults
-  results_JMP <- results_JMP[c(3,1,2)]
+  results_JMP$overallPvalueModel <- overallPvalueModel  # 3rd
+  results_JMP$monthlyResults <- monthlyResults          # 3th element
+  results_JMP <- results_JMP[c(4,3,1,2)]
   return(results_JMP)
 }

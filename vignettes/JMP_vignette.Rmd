@@ -64,6 +64,7 @@ The main function *JMP* is the actual function that will be applied by users. Us
  1. A list of analysis results
 
 - monthly QOL results for each treatment group
+- the overall p value for testing the entire model
 - knot.combinations: different combinations of knots for longitudinal and survival submodels  
 - maximum likelihood estimates (mle) results  
 
@@ -117,7 +118,12 @@ The first element in the results list is the monthly QOL results:
 results$monthlyResults
 ```
 
-The second element is the knots combination (range specified by a input argument) with their corresponding AIC and BIC values.    
+Secondly, the overall p value for testing the entire model is output.
+```{r}
+results$overallPvalueModel
+```
+
+The third element is the knots combination (range specified by a input argument) with their corresponding AIC and BIC values.    
 ```{r,eval=F}
 results$knot.combinations
 ```

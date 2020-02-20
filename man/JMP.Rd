@@ -48,9 +48,11 @@ A list of analysis results
 
           - pValueTrtEffect: p-value for monthly treatment effect
 
-        2. knot.combinations: different combinations of knots for longitudinal and survival submodels with their corresponding AIC and BIC values
+        2. The overall p value for testing the entire model
 
-        3. maximum likelihood estimates (mle) results
+        3. knot.combinations: different combinations of knots for longitudinal and survival submodels with their corresponding AIC and BIC values
+
+        4. maximum likelihood estimates (mle) results
 
         and
 
