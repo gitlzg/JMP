@@ -23,6 +23,6 @@ qol.prefix="qol_", qol.time.prefix="time_",
 id.field = "id", survival.time.field = "survival_time",
 censoring.status.field = "death", treatment.status.field = "trt")
 
-# extract monthly results from output
+### extract monthly results from output
 results$monthlyResults
 
