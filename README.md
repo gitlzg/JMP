@@ -2,17 +2,17 @@
 Joint Model for Palliative care studies (R package)
 
 
-## how to install the R package
+## How to install the R package
 require(devtools)
 
 devtools::install_github("https://github.com/gitlzg/JMP", build_vignettes = TRUE)
 
 
-## detailed vignettes
+## Detailed vignettes
 browseVignettes("JMP")
 
 
-## example
+## Example
 library(JMP)
 
 data(dat_JMP)
@@ -23,6 +23,6 @@ qol.prefix="qol_", qol.time.prefix="time_",
 id.field = "id", survival.time.field = "survival_time",
 censoring.status.field = "death", treatment.status.field = "trt")
 
-### extract monthly results from output
+## Extract monthly results from output
 results$monthlyResults
 
