@@ -23,8 +23,8 @@ qol.prefix="qol_", qol.time.prefix="time_",
 id.field = "id", survival.time.field = "survival_time",
 censoring.status.field = "death", treatment.status.field = "trt")
 
-## Extract monthly results from output
+#### Extract monthly results from output
 results$monthlyResults
-### The overall p value for testing the entire model
+#### The overall p value for testing the entire model
 results$overallPvalueModel
 
