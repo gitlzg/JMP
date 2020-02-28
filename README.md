@@ -25,4 +25,6 @@ censoring.status.field = "death", treatment.status.field = "trt")
 
 ## Extract monthly results from output
 results$monthlyResults
+### The overall p value for testing the entire model
+results$overallPvalueModel
 
