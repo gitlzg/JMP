@@ -20,7 +20,7 @@ group4LogLikelihood = function(covariates, # covariate values for just group 4 m
   if (!is.na(surv.basis)[1]) {
     # subset and reorder the surv.basis for just unique uncensored event times
     indices.to.keep = unique(sapply(uncensored.event.times, function(x) {which(all.surv.times == x)[1]}))
-    surv.basis = surv.basis[indices.to.keep,,drop=F]
+    surv.basis = surv.basis[indices.to.keep,,drop=FALSE]
   }
 
   logl = 0
@@ -43,7 +43,7 @@ group4LogLikelihood = function(covariates, # covariate values for just group 4 m
         hazard.exp.val = computeHazardExp(treatment.status=treatment.status.i,
             alphas=alphas,
             phis=phis,
-            surv.basis=surv.basis[1:largest.smaller.uncensored.time,,drop=F],
+            surv.basis=surv.basis[1:largest.smaller.uncensored.time,,drop=FALSE],
             covariates=covariates.i)
       } else {
         hazard.exp.val = computeHazardExp(treatment.status=treatment.status.i,

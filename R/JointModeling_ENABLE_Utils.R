@@ -13,18 +13,18 @@ library(mefa) ## for flip the data
 #-------------------------------------------------------------------------------------------
 
 testENABLE = function(
-    use.saved.data = F,
-    save.data=F,
+    use.saved.data = FALSE,
+    save.data=FALSE,
     data.file = "JointModeling.RData",
-    optimize=F,
-    compute.standard.errors=F,
-    profile=F,
-    naive=F,
-    include.longitudinal=T,
-    include.survival=T,
+    optimize=FALSE,
+    compute.standard.errors=FALSE,
+    profile=FALSE,
+    naive=FALSE,
+    include.longitudinal=TRUE,
+    include.survival=TRUE,
     long.knots=NA, # Specific knots, only considered if knots.from.data=F
     surv.knots=NA,# Specific knots, only considered if knots.from.data=F
-    knots.from.data=T, # set to true to dynamically compute the specified number of knots from the data
+    knots.from.data=TRUE, # set to true to dynamically compute the specified number of knots from the data
     num.long.knots, # number of long.knots including boundaries if knots.from.data=T; 0 for no spline
     num.surv.knots, # number of surv knots if knots.from.data=T; 0 for no spline
     enabledata.path,
@@ -32,14 +32,14 @@ testENABLE = function(
     surv.covariate.fields,
     qol.prefix,
     qol.time.prefix,
-    has.qol.t0 = F ,
+    has.qol.t0 = FALSE ,
     sample=NA,
     reltol=1e-8,
     outer.iterations=50, # number of outer iterations for calls to constrOptim(); done for all methods except "L-BFGS-B"
     outer.eps=1e-8, # convergence tolerance for constrOptim()
     optim.method="BFGS", #Nelder-Mead",
-    enforce.bounds=T, # Controls whether contrOptim() or optim() is called
-    natural.spline=F,
+    enforce.bounds=TRUE, # Controls whether contrOptim() or optim() is called
+    natural.spline=FALSE,
     enabledata.table, # set to non-NA value if data file does not need to be read in again
     resample.method=NA, # NA for no resampling or "bootstrap" or "jackknife"
     num.bootstraps=10, # number of bootstrap resampled datasets to generate, only meaningful if resample.method="bootstrap"
@@ -99,13 +99,13 @@ testENABLE = function(
     } else { # jackknife
       num.resamples = floor(enable.data$num.subjects/jackknife.size)
     }
-    random.subjects = sample(1:enable.data$num.subjects, enable.data$num.subjects, replace=F)
+    random.subjects = sample(1:enable.data$num.subjects, enable.data$num.subjects, replace=FALSE)
     resampled.datasets = list()
     jackknife.start = NA
     for (i in 1:num.resamples) {
       message("Computing resampled data set ", i)
       if (bootstrap) {
-        resampled.subjects = sample(1:enable.data$num.subjects, enable.data$num.subjects, replace=T)
+        resampled.subjects = sample(1:enable.data$num.subjects, enable.data$num.subjects, replace=TRUE)
       } else { # jackknife
         # Determine the range of subjects to delete
         if (is.na(jackknife.start)) {
@@ -322,7 +322,7 @@ testENABLE = function(
                 enforce.bounds=enforce.bounds,
                 include.survival=resampled.data$include.survival,
                 include.longitudinal=resampled.data$include.longitudinal,
-                compute.standard.errors=F))
+                compute.standard.errors=FALSE))
         if (!inherits(resampled.mle, "try-error")) {
           success.index = success.index + 1
           resampled.mles[[success.index]] = resampled.mle
@@ -379,10 +379,10 @@ testENABLE = function(
 #-------------------------------------------------------------------
 
 knotSelectionViaBIC = function(
-    optimize=F,
-    naive=F,
-    include.longitudinal=T,
-    include.survival=T,
+    optimize=FALSE,
+    naive=FALSE,
+    include.longitudinal=TRUE,
+    include.survival=TRUE,
     long.knot.nums,
     surv.knot.nums,
     enabledata.path,
@@ -391,14 +391,14 @@ knotSelectionViaBIC = function(
     surv.covariate.fields,
     qol.prefix,
     qol.time.prefix,
-    has.qol.t0 = F ,
+    has.qol.t0 = FALSE ,
     sample=NA,
     reltol=1e-8,
     outer.iterations=50, # number of outer iterations for calls to constrOptim(); done for all methods except "L-BFGS-B"
     outer.eps=1e-8, # convergence tolerance for constrOptim()
     optim.method="BFGS", #Nelder-Mead",
-    enforce.bounds=T, # Controls whether contrOptim() or optim() is called
-    natural.spline=F,
+    enforce.bounds=TRUE, # Controls whether contrOptim() or optim() is called
+    natural.spline=FALSE,
     id.field,
     survival.time.field,
     censoring.status.field,
@@ -413,17 +413,17 @@ knotSelectionViaBIC = function(
     num.surv.knots = knot.combinations$num.surv.knots[i]
     message("Testing AIC/BIC for ", num.long.knots, " long knots and ", num.surv.knots, " surv knots...")
     result = try(testENABLE(
-            use.saved.data = F,
-            save.data=F,
+            use.saved.data = FALSE,
+            save.data=FALSE,
             optimize=optimize,
-            compute.standard.errors=F,
+            compute.standard.errors=FALSE,
             enabledata.table=enabledata.table,
-            profile=F,
+            profile=FALSE,
             naive=naive,
             include.longitudinal=include.longitudinal,
             include.survival=include.survival,
             long.knots=NA, surv.knots=NA,
-            knots.from.data=T,
+            knots.from.data=TRUE,
             num.long.knots=num.long.knots,
             num.surv.knots=num.surv.knots,
             enabledata.path=enabledata.path,
@@ -511,13 +511,13 @@ loadENABLE = function(
     subset.size = NA, #100 # NA to process all of the data, number of process only the first X subjects
     long.covariate.fields, # name of column headers hold covariates; leave empty for no covariates
     surv.covariate.fields, # name of column headers hold covariates; leave empty for no covariates
-    include.survival=T,
-    include.longitudinal=T,
-    natural.spline=F,
+    include.survival=TRUE,
+    include.longitudinal=TRUE,
+    natural.spline=FALSE,
     enabledata.path, #"../data/enable2_wide_rob.csv"
     qol.prefix, #"FACTPAL_"
     qol.time.prefix, #"t_"
-    has.qol.t0 = F, #T
+    has.qol.t0 = FALSE, #T
     sample=NA,
     id.field,
     survival.time.field,
@@ -530,7 +530,7 @@ loadENABLE = function(
 
   if (sum(!is.na(enabledata.table))==0) {
     message("Reading ", enabledata.path, "...")
-    enabledata.table = read.table(enabledata.path, header=T, sep=",")
+    enabledata.table = read.table(enabledata.path, header=TRUE, sep=",")
     # remove baseline missing values
     enabledata.table=enabledata.table[!(NA%in%enabledata.table[,long.covariate.fields]),]
     enabledata.table=enabledata.table[!(NA%in%enabledata.table[,surv.covariate.fields]),]
@@ -559,8 +559,8 @@ loadENABLE = function(
 
   treatment.status = enabledata.table[,treatment.status.field]
 
-  long.covariates = as.matrix(apply(enabledata.table[,long.covariate.fields, drop=F], c(1,2), as.numeric))
-  surv.covariates = as.matrix(apply(enabledata.table[,surv.covariate.fields, drop=F], c(1,2), as.numeric))
+  long.covariates = as.matrix(apply(enabledata.table[,long.covariate.fields, drop=FALSE], c(1,2), as.numeric))
+  surv.covariates = as.matrix(apply(enabledata.table[,surv.covariate.fields, drop=FALSE], c(1,2), as.numeric))
   surv.times = enabledata.table[,survival.time.field]
   censored = enabledata.table[,censoring.status.field] == 0
   num.censored = length(which(censored))
@@ -617,11 +617,11 @@ loadENABLE = function(
       qol.time.col.names = paste(qol.time.prefix, 1:num.qol.times, sep="")
     }
 
-    minDiff=min(surv.times-enabledata.table[,qol.time.col.names],na.rm=T)
+    minDiff=min(surv.times-enabledata.table[,qol.time.col.names],na.rm=TRUE)
     if(minDiff<=0)stop("Some follow up time is larger than Survival time, double check the calcuated times.")
     minSurv=min(surv.times)
     if(minSurv<=0)stop("Some survival time is negative, double check the calcuated times.")
-    minTimes=min(enabledata.table[,qol.time.col.names],na.rm=T)
+    minTimes=min(enabledata.table[,qol.time.col.names],na.rm=TRUE)
     if(minTimes<=0)stop("Some follow up time is negative, double check the calcuated times.")
 
     #message("QoL col names: ", paste(qol.col.names, collapse=", "))
@@ -743,7 +743,7 @@ getENABLEInitialValues = function(param.indexes, enable.data,
 # Compute initial values for longitudinal parameters based on lme()
 #-------------------------------------------------------------------
 computeLongitudinalInitialValues = function(enable.data,
-                                            group13.indep=F,
+                                            group13.indep=FALSE,
                                             treatment.status.field,
                                             id.field,
                                             survival.time.field,

@@ -29,7 +29,7 @@ updateBaselineHazardSteps = function(censored, surv.times, treatment.status, sur
     order.surv2 <- dead.data2[order(dead.data2[,2]),]
     uniq.data2=order.surv2[!duplicated(order.surv2[,2]),]
     noba=nobasis+2
-    xbeta1=as.vector(treatment.status)%*%(t(uniq.data2[,3:noba,drop=F]%*%alphas))
+    xbeta1=as.vector(treatment.status)%*%(t(uniq.data2[,3:noba,drop=FALSE]%*%alphas))
   } else {
     #message("surv.basis is NA, using just treatment status for baseline hazard steps")
     xbeta1=as.vector(treatment.status)*alphas
@@ -49,7 +49,7 @@ updateBaselineHazardSteps = function(censored, surv.times, treatment.status, sur
 
   xbeta=xbeta1+xbeta2
   nob=length(surv.times)
-  uniq.times.m=matrix(rep(uniq.event.times,nob),nrow=nob,byrow=T)
+  uniq.times.m=matrix(rep(uniq.event.times,nob),nrow=nob,byrow=TRUE)
 
 
   exp.matrix=(as.vector(surv.times)>=uniq.times.m)*exp(xbeta)
@@ -81,7 +81,7 @@ computeHazardExp = function(treatment.status, alphas, phis, covariates, surv.bas
     if (!is.matrix(surv.basis)) {
       exp.val = t(c(surv.basis, covariates)) %*% betas
     } else {
-      exp.val = cbind(surv.basis, matrix(covariates, nrow=nrow(surv.basis), ncol=length(covariates), byrow=T)) %*% betas
+      exp.val = cbind(surv.basis, matrix(covariates, nrow=nrow(surv.basis), ncol=length(covariates), byrow=TRUE)) %*% betas
     }
   } else {
     exp.val = t(c(1,covariates)) %*% betas

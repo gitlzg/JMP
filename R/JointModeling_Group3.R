@@ -5,7 +5,7 @@
 #-------------------------------------------------------------------
 
 populateBasisCache = function(n, surv.times, censored, long.status, long.times, long.knots, surv.times.for.group, cache,
-    natural.spline=F) {
+    natural.spline=FALSE) {
   options(warn=-1)
   if (!is.na(cache$saved_uncensored.event.times)) {
     #message("basis cache already populated")
@@ -52,10 +52,10 @@ group3LogLikelihood = function(long.status, num.long.measurements,
     mus, betas, psis, sigma, nu, cache, #eta, cache,
     surv.times, surv.times.for.group, censored,
     alphas, phis, lambdas,
-    special.weighting=T,
-    most.likely.event=F,
-    long.log.sum.exp.trick=T,
-    haz.log.sum.exp.trick=F) {
+    special.weighting=TRUE,
+    most.likely.event=FALSE,
+    long.log.sum.exp.trick=TRUE,
+    haz.log.sum.exp.trick=FALSE) {
 
   logl = 0
   if (!is.matrix(long.covariates)) { # only one observation so everything is provided as a vector
@@ -91,7 +91,7 @@ group3LogLikelihood = function(long.status, num.long.measurements,
     # subset and reorder the surv.basis for just unique uncensored event times
     unique.surv.times = unique(surv.times)
     indices.to.keep = unique(sapply(cache$saved_uncensored.event.times, function(x) {which(surv.times == x)[1]}))
-    surv.basis = surv.basis[indices.to.keep,,drop=F]
+    surv.basis = surv.basis[indices.to.keep,,drop=FALSE]
   }
 
   # Compute likelihood for each group 3 subject

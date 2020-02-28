@@ -1,27 +1,32 @@
 Package: JMP
 Title: Joint Model for Palliative care studies
-Version: 0.0.0.9000
+Version: 0.99.0
 Authors@R: 
-    person(given = "Zhigang",
+    c(person(given = "Zhigang",
            family = "Li",
            role = c("aut", "cre"),
            email = "zhigang.li@ufl.edu",
-           )
-Description: A semiparametric joint model for terminal trend of quality of life (QOL) and survival  
-	- For longitudinal QOL outcomes: semiparametric mixed effects submodel (only random intercept is used in this package)   
-	- For survival outcomes: Cox submodel  
+           ),
+      person(given = "Meilin",
+           family = "Jiang",
+           role = c("aut"),
+           email = "meilin.jiang@ufl.edu",
+           ) )
+Description: This package includes the application of a semiparametric joint model for terminal trend of quality of life (QOL) and survival. For longitudinal QOL outcomes, a semiparametric mixed effects submodel (only random intercept is included in this package) is used. In addition, a cox submodel is used to model survival outcomes.
 Depends: R (>= 3.6.0)
 License: GPL-2 | GPL-3
 Encoding: UTF-8
-LazyData: true
 RoxygenNote: 6.1.1
 Imports:
     mefa (>= 3.2-7),
     nlme (>= 3.1-143),
     numDeriv (>= 2016.8-1.1),
     survival (>= 3.1-8),
-    splines (>= 3.1-8)
+    splines (>= 3.1-8),
+    grDevices, graphics, stats, utils
 Suggests: 
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+biocViews: Regression,Survival
+BugReports: https://github.com/gitlzg/JMP/issues

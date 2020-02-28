@@ -3,8 +3,8 @@ library(splines)
 
 getSplineBasis = function(knots, # knot values, includes boundary values
     times, # times at which spline should be evaluated
-    intercept=T, # include an intercept?
-    natural.spline=F # natural or regular cubic spline?
+    intercept=TRUE, # include an intercept?
+    natural.spline=FALSE # natural or regular cubic spline?
 ) {
   if (length(knots) == 0) {
     # no spline so return a vector of 1's
@@ -48,7 +48,7 @@ computeSplineVar = function(basis, cov.submatrix) {
   return (spline.var)
 }
 
-getLongitudinalSplineValues = function(long.times, long.knots, param.values, param.indexes, cov.matrix=NA, natural.spline=T) {
+getLongitudinalSplineValues = function(long.times, long.knots, param.values, param.indexes, cov.matrix=NA, natural.spline=TRUE) {
   message("Number of non-unique times: ", length(as.vector(as.matrix(long.times))))
   message(paste(sort(as.vector(as.matrix(long.times)))[1:15], collapse=", "))
   unique.times = unique(as.vector(as.matrix(long.times)))

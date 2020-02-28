@@ -75,7 +75,7 @@ jointLogLikelihood = function(
         args$num.long.measurements[group1],
         args$long.values[group1,],
         args$long.times[group1,],
-        args$long.covariates[group1,,drop=F],
+        args$long.covariates[group1,,drop=FALSE],
         args$treatment.status[group1],
         long.basis=args$long.basis,
         unique.time.indexes=args$unique.time.indexes, # this is already specific to group 1
@@ -89,10 +89,10 @@ jointLogLikelihood = function(
     #message("Computing group 1 and 2")
     sub.surv.basis = NA
     if (!is.na(args$surv.basis)[1]) {
-      sub.surv.basis = args$surv.basis[c(group1,group2),,drop=F]
+      sub.surv.basis = args$surv.basis[c(group1,group2),,drop=FALSE]
     }
     g12_survlogl = group12SurvivalLogLikelihood(
-        covariates=args$surv.covariates[c(group1,group2),,drop=F],
+        covariates=args$surv.covariates[c(group1,group2),,drop=FALSE],
         surv.times=args$surv.times[c(group1,group2)],
         treatment.status=args$treatment.status[c(group1,group2)],
         surv.basis=sub.surv.basis,
@@ -108,8 +108,8 @@ jointLogLikelihood = function(
         num.long.measurements=args$num.long.measurements[group3],
         long.values=args$long.values[group3,],
         long.times=args$long.times[group3,],
-        long.covariates=args$long.covariates[group3,,drop=F],
-        surv.covariates=args$surv.covariates[group3,,drop=F],
+        long.covariates=args$long.covariates[group3,,drop=FALSE],
+        surv.covariates=args$surv.covariates[group3,,drop=FALSE],
         treatment.status=args$treatment.status[group3],
         long.knots=args$long.knots,
         surv.basis=args$surv.basis,
@@ -129,7 +129,7 @@ jointLogLikelihood = function(
   if (length(group4) > 0 & args$include.survival) {
     #message("Computing group 4")
     g4_logl = group4LogLikelihood(
-        covariates=args$surv.covariates[group4,,drop=F],
+        covariates=args$surv.covariates[group4,,drop=FALSE],
         censored=args$censored,
         all.surv.times=args$surv.times,
         surv.times=args$surv.times[group4],

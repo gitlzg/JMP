@@ -77,19 +77,28 @@ A semiparametric joint model for terminal trend of quality of life (QOL) and sur
 \deqn{Y_i(t^*) = \beta_\mu(t^*) + A_i \beta_A(t^*) + X_i^T \psi_X + b_i + \epsilon_i(t^*)}
 
 - For survival outcomes: Cox submodel
-  \deqn{\lambda_i(t) = \lambda_0(t) exp(A_i\alpha_A + \tilde{X}_i^T \alpha_X)}
+  \deqn{\lambda_i(t) = \lambda_0(t) exp(A_i \alpha_A + \tilde{X}_i^T \alpha_X)}
 }
 \examples{
 data(dat_JMP)
+
 results <- JMP(dat=dat_JMP,
 covariate.fields = c("sex", "qol_0"),
 qol.prefix="qol_", qol.time.prefix="time_",
 id.field = "id", survival.time.field = "survival_time",
 censoring.status.field = "death", treatment.status.field = "trt")
+
+# Extract monthly results from output
+results$monthlyResults
+
+# The overall p value for testing the entire model
+results$overallPvalueModel
 }
 \references{
 Li Z, Frost HR, Tosteson TD, et al. A Semiparametric Joint Model for Terminal Trend of Quality of Life and Survival in Palliative Care Research. Statistics in Medicine. 2017;36:4692–4704. https://doi.org/10.1002/sim.7445
 }
 \author{
-Zhigang Li (zhigang.li @ ufl.edu)
+Zhigang Li <zhigang.li@ufl.edu>
+
+Meilin Jiang <meilin.jiang@ufl.edu>
 }

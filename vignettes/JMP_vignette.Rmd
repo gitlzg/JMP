@@ -27,14 +27,14 @@ In the paper (see reference [1]), we propose a semiparametric terminal trend mod
 
 - a semiparametric mixed effects sub-model for the longitudinal QOL (only random intercept is used in this package)  
 $$Y_i(t^*)=\beta_\mu(t^*)+A_i\beta_A(t^*)+X_i^T\psi_X+b_i+\epsilon_i(t^*)$$
-wehre $\beta_\mu(t^*)$ denotes the mean trajectory in the control group and the $\beta_A(t^*)$ denotes the time-varying treatment effect at time $t^*$ counting backward from the time of death. The unspecified smooth functions $\beta_\mu(t^*)$ and $\beta_A(t^*)$ are determined by nonparametric curve through regression spline methods with natural cubic B-splines. The $\psi_X$ is the p-dimensional vector of fixed effect parameters associated with the baseline covariate vector $X_i$ adjusted in the model, and $b_i$ is the subjct-specific random intercept term. The $\epsilon_i(t^*)$ is the normally distributed residual error. 
+where $\beta_\mu(t^*)$ denotes the mean trajectory in the control group and the $\beta_A(t^*)$ denotes the time-varying treatment effect at time $t^*$ counting backward from the time of death. The unspecified smooth functions $\beta_\mu(t^*)$ and $\beta_A(t^*)$ are determined by nonparametric curve through regression spline methods with natural cubic B-splines. The $\psi_X$ is the p-dimensional vector of fixed effect parameters associated with the baseline covariate vector $X_i$ adjusted in the model, and $b_i$ is the subject-specific random intercept term. The $\epsilon_i(t^*)$ is the normally distributed residual error. 
   
-- a cox sub model for the survival outcomes  
+- a cox sub-model for the survival outcomes  
 $$\lambda_i(t)=\lambda_0(t)exp(A_i\alpha_A+\tilde{X}_i^T\alpha_X)$$
 where t denote the time since enrollment on the prospective time scale, and $\alpha_X$ denote the Q-dimensional parameters associated with the Q-dimensional baseline covariates $\tilde{X_i}$.  
 
   
-The R package "JMP" built was aim to offer a implementation of the analyses for palliative care clinical trials from the perspective of joint modeling.  
+The R package "JMP" was aim to offer a implementation of the analyses for palliative care clinical trials from the perspective of joint modeling.  
 
 ## Input and output
 The package "JMP" consists of a main function, *JMP*, that is calling other sub-functions in order to implement the joint model proposed. Firstly, we can install the package from Github.    
@@ -118,7 +118,7 @@ The first element in the results list is the monthly QOL results:
 results$monthlyResults
 ```
 
-Secondly, the overall p value for testing the entire model is output.
+Secondly, the overall p value for testing the entire model is shown.
 ```{r}
 results$overallPvalueModel
 ```

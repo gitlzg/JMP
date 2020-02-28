@@ -19,7 +19,7 @@ optimizeJointLikelihood = function(
     surv.covariates=NA, # matrix of fixed effect covariates, NA for no covariates
     long.knots=c(), # vector of cubic spline knot times for the longitudinal model (from death in months)
     surv.knots=c(), # vector of cubic spline knot times for the survival model (from enrollment in months)
-    natural.spline=F,
+    natural.spline=FALSE,
     correlation.exponent=2, # the correlation exponent for the R matrix (1 or 2)
     param.init.values, # initial values of the parameters, MUST be specified in the following order
     # mu (mean longitudinal value, cubic spline basis params)
@@ -37,12 +37,12 @@ optimizeJointLikelihood = function(
     outer.iterations=100, # number of outer iterations for calls to constrOptim(); done for all
     # methods except "L-BFGS-B"
     outer.eps=1e-5, # convergence tolerance for constrOptim()
-    enforce.bounds=T, # True to enforce upper and lower param bounds via constrOptim(), false to just call optim()
-    include.survival=T, # boolean controling whether the likelihood for the survival model is computed
-    include.longitudinal= T, # boolean controling whether the likelihood for the longitudinal model is computed
-    compute.standard.errors=F, # True to compute the Hessian
-    profile=F, # True to profile the execution time
-    naive=F # True to treat group 3 as group 4
+    enforce.bounds=TRUE, # True to enforce upper and lower param bounds via constrOptim(), false to just call optim()
+    include.survival=TRUE, # boolean controling whether the likelihood for the survival model is computed
+    include.longitudinal= TRUE, # boolean controling whether the likelihood for the longitudinal model is computed
+    compute.standard.errors=FALSE, # True to compute the Hessian
+    profile=FALSE, # True to profile the execution time
+    naive=FALSE # True to treat group 3 as group 4
   ){
 
   # Compute some needed items
@@ -176,7 +176,7 @@ optimizeJointLikelihood = function(
 
     # optionally compute Hessian and standard errors
     if (compute.standard.errors) {
-      hess = jointLogLikelihoodHessian(params=param.initial.values,
+      hess = jointLogLikelihoodHessian(params=param.init.values,
           args=args,
           group1.R.cache=group1.R.cache,
           group3.R.cache=group3.R.cache)

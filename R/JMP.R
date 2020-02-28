@@ -7,7 +7,7 @@
 ##'   \deqn{Y_i(t^*) = \beta_\mu(t^*) + A_i \beta_A(t^*) + X_i^T \psi_X + b_i + \epsilon_i(t^*)}
 ##'
 ##' - For survival outcomes: Cox submodel
-##'   \deqn{\lambda_i(t) = \lambda_0(t) exp(A_i\alpha_A + \tilde{X}_i^T \alpha_X)}
+##'   \deqn{\lambda_i(t) = \lambda_0(t) exp(A_i \alpha_A + \tilde{X}_i^T \alpha_X)}
 ##'
 ##' @title Joint Model for Palliative care studies
 ##' @param dat formatted R dataset. See example dataset: data(dat_JMP)
@@ -56,18 +56,27 @@
 ##'
 ##'         4. estimated cumulative hazard function in a png file "Cumulative_hazard.png"
 ##'
-##' @author Zhigang Li (zhigang.li @@ ufl.edu)
+##' @author Zhigang Li <zhigang.li@@ufl.edu>
+##'
+##' Meilin Jiang <meilin.jiang@@ufl.edu>
 ##' @references
 ##' Li Z, Frost HR, Tosteson TD, et al. A Semiparametric Joint Model for Terminal Trend of Quality of Life and Survival in Palliative Care Research. Statistics in Medicine. 2017;36:4692–4704. https://doi.org/10.1002/sim.7445
 ##' @export
-##' @import mefa nlme numDeriv survival splines
+##' @import mefa nlme numDeriv survival splines grDevices graphics stats utils
 ##' @examples
 ##' data(dat_JMP)
+##'
 ##' results <- JMP(dat=dat_JMP,
 ##' covariate.fields = c("sex", "qol_0"),
 ##' qol.prefix="qol_", qol.time.prefix="time_",
 ##' id.field = "id", survival.time.field = "survival_time",
 ##' censoring.status.field = "death", treatment.status.field = "trt")
+##'
+##' # Extract monthly results from output
+##' results$monthlyResults
+##'
+##' # The overall p value for testing the entire model
+##' results$overallPvalueModel
 
 
 JMP<- function(
@@ -93,10 +102,10 @@ JMP<- function(
   #message("Selecting optimal number of knots for ENABLE")
 
   knot.combinations = suppressMessages(knotSelectionViaBIC(
-    optimize=F,
-    naive=F,
-    include.longitudinal=T,
-    include.survival=T,
+    optimize=FALSE,
+    naive=FALSE,
+    include.longitudinal=TRUE,
+    include.survival=TRUE,
     long.knot.nums=long.knot.nums,
     surv.knot.nums=0,
     enabledata.path=dataPath,
@@ -105,13 +114,13 @@ JMP<- function(
     surv.covariate.fields = covariate.fields,
     qol.prefix=qol.prefix,
     qol.time.prefix=qol.time.prefix,
-    has.qol.t0 = F,
+    has.qol.t0 = FALSE,
     reltol=1e-8, # convergence tolerance for optim()
     outer.iterations=10, # number of outer iterations for calls to constrOptim(); done for all methods except "L-BFGS-B"
     outer.eps=1e-8, # convergence tolerance for constrOptim()
     optim.method="BFGS", #Nelder-Mead",
-    enforce.bounds=T, # Controls whether contrOptim() or optim() is called
-    natural.spline=T,
+    enforce.bounds=TRUE, # Controls whether contrOptim() or optim() is called
+    natural.spline=TRUE,
     sample=NA,
     id.field = id.field,
     survival.time.field=survival.time.field,
@@ -129,15 +138,15 @@ JMP<- function(
   #print(paste("Using ", num.long.knots, " longitudinal knots and ", num.surv.knots, " survival knots according to AIC/BIC criterion"))
 
   results=suppressMessages(testENABLE(
-    use.saved.data = F,
-    save.data=F,
+    use.saved.data = FALSE,
+    save.data=FALSE,
     data.file = NA,
-    optimize=T,
-    naive=F,
-    compute.standard.errors=T,
-    profile=F,
-    include.longitudinal=T,
-    include.survival=T,
+    optimize=TRUE,
+    naive=FALSE,
+    compute.standard.errors=TRUE,
+    profile=FALSE,
+    include.longitudinal=TRUE,
+    include.survival=TRUE,
     num.long.knots=num.long.knots,
     num.surv.knots=num.surv.knots,
     enabledata.path=dataPath,
@@ -145,13 +154,13 @@ JMP<- function(
     surv.covariate.fields = covariate.fields,
     qol.prefix=qol.prefix,
     qol.time.prefix=qol.time.prefix,
-    has.qol.t0 = F,
+    has.qol.t0 = FALSE,
     reltol=1e-8, # convergence tolerance for optim()
     outer.iterations=10, # number of outer iterations for calls to constrOptim(); done for all methods except "L-BFGS-B"
     outer.eps=1e-8, # convergence tolerance for constrOptim()
     optim.method="BFGS", #Nelder-Mead",
-    enforce.bounds=T, # Controls whether contrOptim() or optim() is called
-    natural.spline=T,
+    enforce.bounds=TRUE, # Controls whether contrOptim() or optim() is called
+    natural.spline=TRUE,
     sample=NA,
     resample.method=NA,
     enabledata.table=dat,
@@ -194,7 +203,7 @@ JMP<- function(
 
   getLongitudinalSplineValues = function(long.times,
                                          avg.long.covariates, #.treated, avg.long.covariates.untreated,
-                                         long.knots, param.values, param.indexes, cov.matrix=NA, natural.spline=T) {
+                                         long.knots, param.values, param.indexes, cov.matrix=NA, natural.spline=TRUE) {
     message("Number of non-unique times: ", length(as.vector(as.matrix(long.times))))
     message(paste(sort(as.vector(as.matrix(long.times))), collapse=", "))
     unique.times = unique(as.vector(as.matrix(long.times)))
@@ -223,7 +232,7 @@ JMP<- function(
     results$untreated = results$untreated + rep(avg.cov, length(results$untreated))
     results$treated = results$treated + rep(avg.cov, length(results$treated))
     if (!is.na(cov.matrix)[1]) {
-      covariate.mat = matrix(rep(avg.long.covariates, nrow(long.basis)), nrow=nrow(long.basis), byrow=T)
+      covariate.mat = matrix(rep(avg.long.covariates, nrow(long.basis)), nrow=nrow(long.basis), byrow=TRUE)
       untreated.indexes = c(param.indexes$mu.indexes, param.indexes$psi.indexes)
       results$untreated.var = computeSplineVar(cbind(long.basis, covariate.mat), cov.matrix[untreated.indexes, untreated.indexes])
       treated.indexes = c(param.indexes$mu.indexes, param.indexes$beta.indexes, param.indexes$psi.indexes)
@@ -259,15 +268,15 @@ JMP<- function(
 
 
   results=suppressMessages(testENABLE(
-    use.saved.data = T,
-    save.data=T,
-    data.file=data.file,
-    optimize=T,
-    naive=F,
-    compute.standard.errors=T,
-    profile=F,
-    include.longitudinal=T,
-    include.survival=T,
+    use.saved.data = TRUE,
+    save.data=TRUE,
+    data.file=NA,
+    optimize=TRUE,
+    naive=FALSE,
+    compute.standard.errors=TRUE,
+    profile=FALSE,
+    include.longitudinal=TRUE,
+    include.survival=TRUE,
     num.long.knots=NA, # this is automatically loaded from saved results
     num.surv.knots=NA,# this is automatically loaded from saved results
     enabledata.path=dataPath,
@@ -275,13 +284,13 @@ JMP<- function(
     surv.covariate.fields = covariate.fields,
     qol.prefix=qol.prefix,
     qol.time.prefix=qol.time.prefix,
-    has.qol.t0 = F,
+    has.qol.t0 = FALSE,
     reltol=1e-8, # convergence tolerance for optim()
     outer.iterations=10, # number of outer iterations for calls to constrOptim(); done for all methods except "L-BFGS-B"
     outer.eps=1e-8, # convergence tolerance for constrOptim()
     optim.method="BFGS", #Nelder-Mead",
-    enforce.bounds=T, # Controls whether contrOptim() or optim() is called
-    natural.spline=T,
+    enforce.bounds=TRUE, # Controls whether contrOptim() or optim() is called
+    natural.spline=TRUE,
     sample=NA,
     resample.method=NA,enabledata.table=dat,
     mle=mle_save,
@@ -558,7 +567,7 @@ JMP<- function(
                                            param.values=results$mle$optim.results$par,
                                            param.indexes=results$param.indexes,
                                            cov.matrix=cov.matrix,
-                                           natural.spline=T)
+                                           natural.spline=TRUE)
   )#suppress
 
   low.CI.untreat=monthlyValue$untreated-1.96*sqrt(monthlyValue$untreated.var)
@@ -571,8 +580,8 @@ JMP<- function(
   monthsNo=length(monthlyTime)
   n=length(results$enable.data$surv.times)
 
-  tMatrix=matrix(rep(monthlyTime,n),nrow=n,byrow=T)
-  survTMatrix=matrix(rep(results$enable.data$surv.times,monthsNo),nrow=n,byrow=F)
+  tMatrix=matrix(rep(monthlyTime,n),nrow=n,byrow=TRUE)
+  survTMatrix=matrix(rep(results$enable.data$surv.times,monthsNo),nrow=n,byrow=FALSE)
   indicatorM=1*(survTMatrix>=tMatrix)
 
   nByMonth=matrix(rep(c(NA,NA),monthsNo),nrow=monthsNo)
@@ -626,7 +635,7 @@ JMP<- function(
                                                     param.values=results$mle$optim.results$par,
                                                     param.indexes=results$param.indexes,
                                                     cov.matrix=cov.matrix,
-                                                    natural.spline=T)
+                                                    natural.spline=TRUE)
     )#suppress
 
     # calculate chisquare test statistic

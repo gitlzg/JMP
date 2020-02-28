@@ -9,8 +9,37 @@
 #'   \item{sex}{sex}
 #'   \item{death}{censoring status (1 for death, 0 for censored)}
 #'   \item{survival_time}{survival time in months}
-#'   \item{time_}{time for each longitudinal measurement of QOL}
-#'   \item{qol_}{quality of life at different time point}
+#'   \item{time_1}{1st time for each longitudinal measurement of QOL}
+#'   \item{time_2}{2nd time for each longitudinal measurement of QOL}
+#'   \item{time_3}{3rd time for each longitudinal measurement of QOL}
+#'   \item{time_4}{4th time for each longitudinal measurement of QOL}
+#'   \item{time_5}{5th time for each longitudinal measurement of QOL}
+#'   \item{time_6}{6th time for each longitudinal measurement of QOL}
+#'   \item{time_7}{7th time for each longitudinal measurement of QOL}
+#'   \item{time_8}{8th time for each longitudinal measurement of QOL}
+#'   \item{time_9}{9th time for each longitudinal measurement of QOL}
+#'   \item{time_10}{10th time for each longitudinal measurement of QOL}
+#'   \item{time_11}{11th time for each longitudinal measurement of QOL}
+#'   \item{time_12}{12th time for each longitudinal measurement of QOL}
+#'   \item{time_13}{13th time for each longitudinal measurement of QOL}
+#'   \item{time_14}{14th time for each longitudinal measurement of QOL}
+#'   \item{time_15}{15th time for each longitudinal measurement of QOL}
+#'   \item{qol_0}{quality of life at different time point 0 (baseline)}
+#'   \item{qol_1}{quality of life at different time point 1}
+#'   \item{qol_2}{quality of life at different time point 2}
+#'   \item{qol_3}{quality of life at different time point 3}
+#'   \item{qol_4}{quality of life at different time point 4}
+#'   \item{qol_5}{quality of life at different time point 5}
+#'   \item{qol_6}{quality of life at different time point 6}
+#'   \item{qol_7}{quality of life at different time point 7}
+#'   \item{qol_8}{quality of life at different time point 8}
+#'   \item{qol_9}{quality of life at different time point 9}
+#'   \item{qol_10}{quality of life at different time point 10}
+#'   \item{qol_11}{quality of life at different time point 11}
+#'   \item{qol_12}{quality of life at different time point 12}
+#'   \item{qol_13}{quality of life at different time point 13}
+#'   \item{qol_14}{quality of life at different time point 14}
+#'   \item{qol_15}{quality of life at different time point 15}
 #'   ...
 #' }
 

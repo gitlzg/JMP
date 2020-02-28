@@ -24,7 +24,7 @@ group12SurvivalLogLikelihood = function(covariates, # covariate values for just 
   if (!is.na(surv.basis)[1]) {
     # subset and reorder the surv.basis for just unique uncensored event times
     indices.to.keep = unique(sapply(unique.event.times, function(x) {which(surv.times == x)[1]}))
-    surv.basis = surv.basis[indices.to.keep,,drop=F]
+    surv.basis = surv.basis[indices.to.keep,,drop=FALSE]
   }
 
   # for each group member, determine which of the unique sorted events corresponds to their survival time
@@ -71,7 +71,7 @@ group12SurvivalLogLikelihood = function(covariates, # covariate values for just 
       hazard.exp.val = computeHazardExp(treatment.status=treatment.status.i,
           alphas=alphas,
           phis=phis,
-          surv.basis=surv.basis[1:largest.smaller.uncensored.time,,drop=F],
+          surv.basis=surv.basis[1:largest.smaller.uncensored.time,,drop=FALSE],
           covariates=covariates.i)
     }
 

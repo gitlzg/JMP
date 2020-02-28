@@ -50,7 +50,7 @@ group1LongitudinalLogLikelihood = function(long.status, num.long.measurements,
       cov_i_psi = t(cov_i) %*% psis
     }
 
-    subset.long.basis = long.basis[time.indexes,,drop=F]
+    subset.long.basis = long.basis[time.indexes,,drop=FALSE]
     f_i = computeLongitudinalMean(subset.long.basis, mus, betas, treatment.status[i])
     long.delta = suppressWarnings(Y_i - f_i - cov_i_psi)
     logl_i = -.5*(n_i*log(2*pi) + log(det.V_i) + t(long.delta) %*% inv.V_i %*% long.delta)
