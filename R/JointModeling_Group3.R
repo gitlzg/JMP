@@ -7,7 +7,7 @@
 populateBasisCache = function(n, surv.times, censored, long.status, long.times, long.knots, surv.times.for.group, cache,
     natural.spline=FALSE) {
   options(warn=-1)
-  if (!is.na(cache$saved_uncensored.event.times)) {
+  if (!is.na(cache$saved_uncensored.event.times[1])) {
     #message("basis cache already populated")
     return ()
   } else {
